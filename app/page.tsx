@@ -1,6 +1,6 @@
-'use client';
-import styles from './page.module.css';
-import { useActionState, useCallback, useState } from 'react';
+"use client";
+import styles from "./page.module.css";
+import { useActionState, useCallback, useEffect, useState } from "react";
 
 interface IUser {
   name: string;
@@ -17,15 +17,15 @@ function UserForm({
   return (
     <form action={formAction}>
       <div>
-        <label htmlFor="user-name">Name:</label>{' '}
+        <label htmlFor="user-name">Name:</label>{" "}
         <input type="text" name="name" id="user-name" />
       </div>
       <div>
-        <label htmlFor="user-dob">DOB:</label>{' '}
+        <label htmlFor="user-dob">DOB:</label>{" "}
         <input type="date" name="dob" id="user-dob" />
       </div>
       <div>
-        <label htmlFor="user-role">Role:</label>{' '}
+        <label htmlFor="user-role">Role:</label>{" "}
         <input type="text" name="role" id="user-role" />
       </div>
       <div>
@@ -37,13 +37,38 @@ function UserForm({
 export default function Home() {
   const [users, setUser] = useState<IUser[]>([]);
 
-  const onUserAdd = useCallback((prevState: any, queryData: FormData) => {
-    const user: IUser = {
-      name: queryData.get('name') as string,
-      dob: queryData.get('dob') as string,
-      role: queryData.get('role') as string,
-    };
-    setUser((prevState) => [...prevState, user]);
+  const onUserAdd = useCallback(
+    async (prevState1: any, queryData: FormData) => {
+      const user: IUser = {
+        name: queryData.get("name") as string,
+        dob: queryData.get("dob") as string,
+        role: queryData.get("role") as string,
+      };
+      const rawResponse = await fetch("http://localhost:4000/users", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+      const content = await rawResponse.json();
+      console.log("created response => ", content);
+      if (content._id) {
+        getUsers();
+      }
+    },
+    []
+  );
+
+  const getUsers = () => {
+    fetch(`http://localhost:4000/users`)
+      .then((data) => data.json())
+      .then((data) => setUser(data.data));
+  };
+
+  useEffect(() => {
+    getUsers();
   }, []);
   return (
     <div className={styles.page}>
