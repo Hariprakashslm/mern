@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  fileId: String,
 });
 
 module.exports = mongoose.model("users", UserSchema, "users");

@@ -6,6 +6,8 @@ interface IUser {
   name: string;
   dob: string;
   role: string;
+  file: File;
+  fileId?: string;
 }
 
 function UserForm({
@@ -29,6 +31,10 @@ function UserForm({
         <input type="text" name="role" id="user-role" />
       </div>
       <div>
+        <label htmlFor="user-role">Role:</label>{" "}
+        <input type="file" name="file" id="user-role" />
+      </div>
+      <div>
         <button>Submit</button>
       </div>
     </form>
@@ -43,14 +49,11 @@ export default function Home() {
         name: queryData.get("name") as string,
         dob: queryData.get("dob") as string,
         role: queryData.get("role") as string,
+        file: queryData.get("file") as File,
       };
       const rawResponse = await fetch("http://localhost:4000/users", {
         method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
+        body: queryData,
       });
       const content = await rawResponse.json();
       console.log("created response => ", content);
@@ -79,6 +82,7 @@ export default function Home() {
             <th> Name</th>
             <th>DOB</th>
             <th>Role</th>
+            <th>File</th>
           </tr>
         </thead>
         <tbody>
@@ -88,6 +92,7 @@ export default function Home() {
                 <td>{user.name}</td>
                 <td>{user.dob}</td>
                 <td>{user.role}</td>
+                <td>{user.fileId}</td>
               </tr>
             );
           })}

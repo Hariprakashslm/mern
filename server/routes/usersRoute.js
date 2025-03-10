@@ -1,6 +1,10 @@
 const usersController = require("../controllers/users.controller");
 const { APIMethods } = require("../utils/apiMethods");
+const multer = require("multer");
 
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+const fileUploadMiddleware = upload.single("file");
 const userRoutes = [
   {
     path: "/",
@@ -20,16 +24,7 @@ const userRoutes = [
   {
     path: "/",
     method: APIMethods.POST,
-    middlewares: [
-      // (req, res, next) => {
-      //   console.log("first middleware");
-      //   next();
-      // },
-      // (req, res, next) => {
-      //   console.log("secound middleware");
-      //   next();
-      // },
-    ],
+    middlewares: [fileUploadMiddleware],
     handler: usersController.createUser,
   },
 ];

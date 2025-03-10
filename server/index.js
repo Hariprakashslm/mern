@@ -1,8 +1,9 @@
+require("dotenv").config({ path: "../.env" });
 const express = require("express");
 const appRoutes = require("./routes/appRoutes");
 const cors = require("cors");
 const { urlencoded, json } = require("body-parser");
-require("dotenv").config({ path: "../.env" });
+
 require("./db.js");
 const app = express();
 const PORT = 4000;
